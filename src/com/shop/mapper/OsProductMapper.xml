@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.OsProductMapper">
+    <resultMap id="BaseResultMap" type="com.shop.po.OsProduct">
+        <id column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="product_number" jdbcType="BIGINT" property="productNumber"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="show_price" jdbcType="DECIMAL" property="showPrice"/>
+        <result column="introduce" jdbcType="VARCHAR" property="introduce"/>
+        <result column="pic_img" jdbcType="VARCHAR" property="picImg"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="page_title" jdbcType="VARCHAR" property="pageTitle"/>
+        <result column="page_description" jdbcType="VARCHAR" property="pageDescription"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+    </resultMap>
+
+    <resultMap id="HotCategory" type="com.shop.po.OsProduct">
+        <id column="product_id" jdbcType="BIGINT" property="productId"/>
+        <result column="product_number" jdbcType="BIGINT" property="productNumber"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="show_price" jdbcType="DECIMAL" property="showPrice"/>
+        <result column="introduce" jdbcType="VARCHAR" property="introduce"/>
+        <result column="pic_img" jdbcType="VARCHAR" property="picImg"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="page_title" jdbcType="VARCHAR" property="pageTitle"/>
+        <result column="page_description" jdbcType="VARCHAR" property="pageDescription"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+    </resultMap>
+    <resultMap id="AllCategory" type="com.shop.vo.HotCategoryVO">
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <collection property="childrenCategorys" ofType="com.shop.vo.CategoryVO">
+            <id column="category_id" jdbcType="BIGINT" property="categoryId"/>
+            <result column="childname" jdbcType="VARCHAR" property="name"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		product_id, product_number, name, show_price, introduce,
+		pic_img, create_time,
+		update_time,
+		page_title, page_description, remarks
+	</sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from os_product
+        where product_id = #{productId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByProductNumber" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from os_product
+        where product_number = #{productNumber,jdbcType=BIGINT}
+    </select>
+    <select id="selectProductNumberByProductId" parameterType="java.lang.Long"
+            resultType="java.lang.Long">
+		SELECT DISTINCT
+            op.product_number
+        FROM
+            os_product_specification ops,
+            os_product op
+        WHERE
+            ops.product_id = op.product_id
+        AND op.product_id = #{productId,jdbcType=BIGINT}
+	</select>
+    <select id="selectNameByProductId" parameterType="java.lang.Long"
+            resultType="java.lang.String">
+        SELECT DISTINCT
+        op.`name`
+        FROM
+        os_product_specification ops,
+        os_product op
+        WHERE
+        ops.product_id = op.product_id
+        AND op.product_id = #{productId,jdbcType=BIGINT}
+    </select>
+
+    <select id="listByPage" resultMap="BaseResultMap" parameterType="java.util.List">
+        SELECT
+            p.*
+        FROM
+            os_product_category c
+        LEFT JOIN os_product p ON c.product_id = p.product_id
+        WHERE
+            c.category_id IN
+        <foreach collection="categoryIds" item="categoryId" open="(" close=")" separator=",">
+            #{categoryId}
+        </foreach>
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap" >
+        SELECT
+        p.*
+        FROM
+        os_product_category c
+        LEFT JOIN os_product p ON c.product_id = p.product_id
+    </select>
+
+
+    <select id="getProductBySpecNumber" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        SELECT
+            op.*
+        FROM
+            os_product_specification ops,
+            os_product op
+        WHERE
+            ops.product_id = op.product_id
+        AND ops.product_spec_number = #{productSpecNumber,jdbcType=BIGINT}
+    </select>
+    <select id="selectPicImgByProductId" parameterType="java.lang.Long"
+            resultType="java.lang.String">
+        SELECT DISTINCT
+        op.pic_img
+        FROM
+        os_product_specification ops,
+        os_product op
+        WHERE
+        ops.product_id = op.product_id
+        AND op.product_id = #{productId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		os_product
+		where product_id = #{productId,jdbcType=BIGINT}
+	</delete>
+    <insert id="insert" parameterType="com.shop.po.OsProduct">
+		insert into os_product
+		(product_id, product_number, name,
+		show_price, introduce, pic_img,
+		create_time, update_time, page_title,
+		page_description, remarks)
+		values
+		(#{productId,jdbcType=BIGINT}, #{productNumber,jdbcType=BIGINT},
+		#{name,jdbcType=VARCHAR},
+		#{showPrice,jdbcType=DECIMAL},
+		#{introduce,jdbcType=VARCHAR}, #{picImg,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+		#{pageTitle,jdbcType=VARCHAR},
+		#{pageDescription,jdbcType=VARCHAR},
+		#{remarks,jdbcType=VARCHAR})
+	</insert>
+    <insert id="insertSelective" parameterType="com.shop.po.OsProduct">
+        insert into os_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productNumber != null">
+                product_number,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="showPrice != null">
+                show_price,
+            </if>
+            <if test="introduce != null">
+                introduce,
+            </if>
+            <if test="picImg != null">
+                pic_img,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="pageTitle != null">
+                page_title,
+            </if>
+            <if test="pageDescription != null">
+                page_description,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">
+                #{productId,jdbcType=BIGINT},
+            </if>
+            <if test="productNumber != null">
+                #{productNumber,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="showPrice != null">
+                #{showPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="introduce != null">
+                #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="picImg != null">
+                #{picImg,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pageTitle != null">
+                #{pageTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="pageDescription != null">
+                #{pageDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.shop.po.OsProduct">
+        update os_product
+        <set>
+            <if test="productNumber != null">
+                product_number = #{productNumber,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="showPrice != null">
+                show_price = #{showPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="introduce != null">
+                introduce = #{introduce,jdbcType=VARCHAR},
+            </if>
+            <if test="picImg != null">
+                pic_img = #{picImg,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="pageTitle != null">
+                page_title = #{pageTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="pageDescription != null">
+                page_description = #{pageDescription,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where product_id = #{productId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.shop.po.OsProduct">
+		update os_product
+		set product_number = #{productNumber,jdbcType=BIGINT},
+		name =
+		#{name,jdbcType=VARCHAR},
+		show_price = #{showPrice,jdbcType=DECIMAL},
+		introduce = #{introduce,jdbcType=VARCHAR},
+		pic_img =
+		#{picImg,jdbcType=VARCHAR},
+		create_time =
+		#{createTime,jdbcType=TIMESTAMP},
+		update_time =
+		#{updateTime,jdbcType=TIMESTAMP},
+		page_title =
+		#{pageTitle,jdbcType=VARCHAR},
+		page_description =
+		#{pageDescription,jdbcType=VARCHAR},
+		remarks =
+		#{remarks,jdbcType=VARCHAR}
+		where product_id =
+		#{productId,jdbcType=BIGINT}
+	</update>
+
+    <select id="getHotProduct" resultMap="HotCategory"
+            parameterType="com.shop.vo.CategoryVO">
+		SELECT
+		op.product_id,
+		op.product_number,
+		op. NAME,
+		op.show_price,
+		op.introduce,
+		op.pic_img,
+		op.create_time,
+		op.update_time,
+		op.page_title,
+		op.page_description,
+		op.remarks
+		FROM
+		os_product op,
+		os_product_category opc
+		WHERE
+		op.product_id = opc.product_id
+		AND
+		opc.category_id = #{categoryId,jdbcType=BIGINT};
+	</select>
+    <select id="getAllCategory" resultMap="AllCategory">
+		SELECT DISTINCT
+		c2.`name`,
+		c1.`name` as childname,
+		c1.category_id
+		FROM
+		os_product p,
+		os_product_category
+		pc,
+		os_category c1,
+		os_category c2
+		WHERE
+		p.product_id =
+		pc.product_id
+		AND
+		c1.category_id = pc.category_id
+		AND c2.category_id =
+		c1.parent_id ORDER BY
+		c1.category_id DESC;
+	</select>
+</mapper>

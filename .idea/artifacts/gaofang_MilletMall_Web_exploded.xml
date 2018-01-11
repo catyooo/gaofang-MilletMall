@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="gaofang-MilletMall:Web exploded">
+    <output-path>$PROJECT_DIR$/classes/artifacts/gaofang_MilletMall_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="gaofang-MilletMall/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="gaofang-MilletMall" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="ant-1.9.6" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

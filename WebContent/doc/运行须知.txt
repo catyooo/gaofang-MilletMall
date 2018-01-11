@@ -1,0 +1,5 @@
+# 高仿小米商城
+建立数据库，导入sql文件
+更改数据源db.properties设置
+启动Tomcat
+浏览器访问：http://localhost:8080/gaofang-MilletMall/index

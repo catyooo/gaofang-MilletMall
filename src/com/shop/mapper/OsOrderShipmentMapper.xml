@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.dao.OsOrderShipmentMapper">
+  <resultMap id="BaseResultMap" type="com.shop.po.OsOrderShipment">
+    <id column="order_shipment_id" jdbcType="BIGINT" property="orderShipmentId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
+    <result column="user_adress" jdbcType="VARCHAR" property="userAdress" />
+    <result column="user_zipcode" jdbcType="INTEGER" property="userZipcode" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_shipment_id, order_id, user_name, user_phone, user_adress, user_zipcode, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from os_order_shipment
+    where order_shipment_id = #{orderShipmentId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByOderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from os_order_shipment
+    where order_id = #{orderId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from os_order_shipment
+    where order_shipment_id = #{orderShipmentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.shop.po.OsOrderShipment">
+    insert into os_order_shipment (order_shipment_id, order_id, user_name, 
+      user_phone, user_adress, user_zipcode, 
+      update_time)
+    values (#{orderShipmentId,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, 
+      #{userPhone,jdbcType=VARCHAR}, #{userAdress,jdbcType=VARCHAR}, #{userZipcode,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.shop.po.OsOrderShipment">
+    insert into os_order_shipment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderShipmentId != null">
+        order_shipment_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userPhone != null">
+        user_phone,
+      </if>
+      <if test="userAdress != null">
+        user_adress,
+      </if>
+      <if test="userZipcode != null">
+        user_zipcode,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderShipmentId != null">
+        #{orderShipmentId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAdress != null">
+        #{userAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="userZipcode != null">
+        #{userZipcode,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shop.po.OsOrderShipment">
+    update os_order_shipment
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhone != null">
+        user_phone = #{userPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="userAdress != null">
+        user_adress = #{userAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="userZipcode != null">
+        user_zipcode = #{userZipcode,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where order_shipment_id = #{orderShipmentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shop.po.OsOrderShipment">
+    update os_order_shipment
+    set order_id = #{orderId,jdbcType=BIGINT},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_phone = #{userPhone,jdbcType=VARCHAR},
+      user_adress = #{userAdress,jdbcType=VARCHAR},
+      user_zipcode = #{userZipcode,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where order_shipment_id = #{orderShipmentId,jdbcType=BIGINT}
+  </update>
+</mapper>
